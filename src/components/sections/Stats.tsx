@@ -41,7 +41,7 @@ export const Stats = () => {
   ];
 
   return (
-    <section className="text-[12px] py-15">
+    <section className="text-[12px] py-15 max-w-360 mx-auto">
       <h2 className="text-2xl font-semibold flex items-center justify-center mb-4">
         {" "}
         <span>LIFE IS</span>{" "}
