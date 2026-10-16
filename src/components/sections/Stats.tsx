@@ -20,12 +20,12 @@ export const Stats = () => {
   const stats_info_array: stats_card_component_props[] = [
     {
       img: "https://miniso.com/vancheerfile/images/2024/3/20240308182650087.png",
-      h6: "Gloabal Markets",
+      h6: "Global Markets",
       p: "112",
     },
     {
       img: "https://miniso.com/vancheerfile/images/2024/3/20240308182626732.png",
-      h6: "Gloabal Stores",
+      h6: "Global Stores",
       p: "8500 +",
     },
     {
@@ -41,14 +41,14 @@ export const Stats = () => {
   ];
 
   return (
-    <section className="text-[12px]">
-      <h2 className="text-2xl font-semibold flex items-center justify-center">
+    <section className="text-[12px] py-15">
+      <h2 className="text-2xl font-semibold flex items-center justify-center mb-4">
         {" "}
         <span>LIFE IS</span>{" "}
         <img
           src="https://miniso.com/en/images/nimg48_1.png"
           alt=""
-          className="inline w-[17px]"
+          className="inline w-[17px] mx-2"
         />{" "}
         <span>FOR FUN</span>{" "}
       </h2>
