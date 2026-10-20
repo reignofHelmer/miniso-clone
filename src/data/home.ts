@@ -1,208 +1,116 @@
-import { img } from "./site";
-import type {
-  Banner,
-  IpCollection,
-  IpFeature,
-  JoyCard,
-  Stat,
-  StoreRegion,
-} from "./types";
+import { photos } from "./photos";
+import type { Line, Photo, Shelf, Stat, StoreRegion, Story } from "./types";
 
-// ---------- Hero carousel ----------
-const banner = (
-  id: string,
-  alt: string,
-  path: string,
-  width = 1920,
-  height = 820,
-): Banner => ({
-  id,
-  alt,
-  image: img(`/vancheerfile/images${path}`),
-  width,
-  height,
-});
+// MINILA is a fictional brand. All copy here is invented for this project.
 
-export const banners: Banner[] = [
-  banner("toy-story-5", "YOYO × Toy Story 5", "/2026/7/20260715165332866.jpg"),
-  banner("star-wars", "Star Wars collection", "/2026/6/20260604172724912.jpg"),
-  banner("sanrio", "Sanrio characters", "/2026/3/20260319094356345.jpg"),
-  banner(
-    "friends",
-    "FRIENDS collection",
-    "/2026/4/20260410105320732.jpg",
-    2997,
-    1280,
-  ),
-  banner("zootopia", "Zootopia collection", "/2025/10/20251014152027904.jpg"),
-  banner(
-    "vinyl-plush",
-    "Vinyl plush collection",
-    "/2025/8/20250828114151749.jpg",
-  ),
-  banner("one-piece", "ONE PIECE collection", "/2025/6/20250618103358387.jpg"),
-  banner(
-    "harry-potter",
-    "Harry Potter collection",
-    "/2024/12/20241206094227246.jpg",
-  ),
+// ---------- Hero: photos that show through the wordmark ----------
+export const heroPhotos: Photo[] = [
+  photos.plushShelf,
+  photos.stationeryShop,
+  photos.robots,
+  photos.teddyCrowd,
+  photos.pens,
 ];
 
-// ---------- IP spotlight (Harry Potter / Peanuts / BT21 / Loopy) ----------
-export const ipFeatures: IpFeature[] = [
+// ---------- Stats band ----------
+export const stats: Stat[] = [
+  { id: "markets", label: "markets", value: 64 },
+  { id: "stores", label: "stores", value: 3200, plus: true },
+  { id: "members", label: "members", value: 40, unit: "million", plus: true },
+  { id: "visits", label: "visits a year", value: 600, unit: "million" },
+];
+
+// ---------- Lines accordion ----------
+export const lines: Line[] = [
   {
-    id: "harry-potter",
-    name: "Harry Potter",
-    eyebrow: "IP Collaboration",
+    id: "cloud-bunny",
+    name: "Cloud Bunny",
+    tagline: "Soft friends for every shelf",
     description:
-      "Explore MINISO's Harry Potter-inspired collection. Magical wonders await!",
-    href: "#ip-collaboration",
-    image: img("/vancheerfile/images/2024/10/20241010144528802.png"),
-    logo: img("/vancheerfile/images/2024/11/2024110511402551.png"),
+      "Plush pals in sorbet colours, sized for a bed, a bag or a desk. Every one gets squeezed and hugged in testing before it ships.",
+    tone: "bubblegum",
+    photo: photos.pinkBear,
+    shelfId: "cloud-bunny",
   },
   {
-    id: "peanuts",
-    name: "PEANUTS",
-    eyebrow: "IP Collaboration",
+    id: "desk-club",
+    name: "Desk Club",
+    tagline: "Stationery that makes lists fun",
     description:
-      "MINISO has launched a collaboration with Snoopy, featuring creative representations of classic characters from the Peanuts comics on MINISO products.",
-    href: "#ip-collaboration",
-    image: img("/vancheerfile/images/2024/8/2024082009235934.jpg"),
-    logo: img("/vancheerfile/images/2024/10/2024100915018464.png"),
+      "Notebooks, gel pens and pencil cases in calm pastels, designed to sit together on one tidy desk.",
+    tone: "mint",
+    photo: photos.blueNotebook,
+    shelfId: "desk-club",
   },
   {
-    id: "bt21",
-    name: "BT21",
-    eyebrow: "IP Collaboration",
+    id: "home-soft",
+    name: "Home Soft",
+    tagline: "Little upgrades for slow evenings",
     description:
-      "MINISO has introduced the highly anticipated BT21 series of IP products, with a variety of new items now available online, providing consumers with a fresh shopping experience.",
-    href: "#ip-collaboration",
-    image: img("/vancheerfile/images/2024/8/2024082009257529.jpg"),
-    logo: img("/vancheerfile/images/2024/10/20241010141853361.png"),
+      "Candles, mugs and cushions that turn one corner of your room into the best seat in the house.",
+    tone: "butter",
+    photo: photos.candleNook,
+    shelfId: "home-away",
   },
   {
-    id: "loopy",
-    name: "LOOPY",
-    eyebrow: "IP Collaboration",
+    id: "off-we-go",
+    name: "Off We Go",
+    tagline: "Travel bits that fit in a pocket",
     description:
-      'MINISO has partnered with Zanmang Loopy to exclusively release new products, catering to customers\' fun and personalized consumption needs. Additionally, the "LOOPY Mad Literature" themed store has opened, sweeping the world with this "crazy style" trend.',
-    href: "#ip-collaboration",
-    image: img("/vancheerfile/images/2024/8/20240819141717931.png"),
-    logo: img("/vancheerfile/images/2024/10/20241009145737656.png"),
+      "Bottles, totes and small bags for the commute, the weekend away and everything in between.",
+    tone: "cobalt",
+    photo: photos.mapSunglasses,
+    shelfId: "home-away",
   },
 ];
 
-// ---------- IP tabs (ONE PIECE / Stitch / CHiiKAWA) ----------
-const product = (id: string, name: string, path: string) => ({
+// ---------- Product rail ----------
+const product = (id: string, name: string, photo: Photo) => ({
   id,
   name,
-  image: img(`/vancheerfile/images${path}`),
+  photo,
 });
 
-export const ipCollections: IpCollection[] = [
+export const shelves: Shelf[] = [
   {
-    id: "one-piece",
-    name: "ONE PIECE",
+    id: "cloud-bunny",
+    name: "Cloud Bunny",
     products: [
-      product("op-bag", "Shopping Bag", "/2025/6/20250630102012756.jpg"),
-      product(
-        "op-pendant",
-        "Big-head Cute Plush Pendant",
-        "/2025/6/20250630101220264.jpg",
-      ),
-      product("op-pillow", "16in. Pillow", "/2025/6/20250630102216528.jpg"),
-      product(
-        "op-notepad",
-        "Boxed Weekly-Planning Note Pad",
-        "/2025/6/20250630102345573.jpg",
-      ),
-      product(
-        "op-standee",
-        "Acrylic Scene Standee Surprise Box",
-        "/2025/6/20250630101813655.jpg",
-      ),
-      product(
-        "op-bottle",
-        "Straw Plastic Bottle 1250mL",
-        "/2025/6/20250630102516967.jpg",
-      ),
+      product("bow-tie-bear", "Bow-tie bear", photos.bowTieBear),
+      product("ribbon-bear", "Ribbon bear", photos.ribbonBear),
+      product("mint-bow-cub", "Mint-bow cub", photos.greenBowBear),
+      product("puppy-pal", "Puppy pal", photos.puppy),
     ],
   },
   {
-    id: "stitch",
-    name: "Stitch",
+    id: "desk-club",
+    name: "Desk Club",
     products: [
-      product("st-blind-box", "Blind Box", "/2025/6/20250624152241316.png"),
-      product("st-keychain", "Keychain", "/2025/6/20250624152131493.png"),
-      product("st-lunch-box", "Lunch Box", "/2025/6/20250624151856300.png"),
-      product("st-bottle", "Water Bottle", "/2025/6/20250624152011545.png"),
+      product("spiral-notebook", "Spiral notebook", photos.spiralNotebook),
+      product("rainbow-tin", "Rainbow pencil tin", photos.pencilTin),
+      product("grid-trio", "Grid notebook trio", photos.gridNotebooks),
+      product("art-case", "Zip-up art case", photos.artCase),
     ],
   },
   {
-    id: "chiikawa",
-    name: "CHiiKAWA",
+    id: "home-away",
+    name: "Home & away",
     products: [
-      product(
-        "ck-pencil-case",
-        "Plush Pencil Case",
-        "/2025/7/20250707170144525.png",
-      ),
-      product(
-        "ck-fan",
-        "1200mAh Mini Handheld Fan",
-        "/2025/7/20250707170056569.jpg",
-      ),
-      product(
-        "ck-lunch-bag",
-        "Handheld Lunch Bag",
-        "/2025/7/20250707165942285.jpg",
-      ),
-      product(
-        "ck-crossbody",
-        "Plush Crossbody Bag",
-        "/2025/7/20250707165818610.jpg",
-      ),
+      product("sage-bottle", "Sage steel bottle", photos.bottle),
+      product("everyday-tote", "Everyday tote", photos.tote),
+      product("mini-sling", "Mini sling bag", photos.slingBag),
+      product("morning-mug", "Morning mug", photos.mug),
+      product("amber-candle", "Amber jar candle", photos.jarCandle),
     ],
   },
 ];
 
-// ---------- "Life is for fun" stats (Tolu) ----------
-export const stats: Stat[] = [
-  {
-    id: "markets",
-    label: "Global Markets",
-    icon: img("/vancheerfile/images/2024/3/20240308182650087.png"),
-    value: 112,
-  },
-  {
-    id: "stores",
-    label: "Global Stores",
-    icon: img("/vancheerfile/images/2024/3/20240308182626732.png"),
-    value: 8500,
-    plus: true,
-  },
-  {
-    id: "members",
-    label: "Registered Members",
-    icon: img("/vancheerfile/images/2024/3/2024030818263935.png"),
-    value: 100,
-    unit: "million",
-    plus: true,
-  },
-  {
-    id: "customers",
-    label: "In-store Customers",
-    icon: img("/vancheerfile/images/2024/3/20240308182539248.png"),
-    value: 1,
-    unit: "billion",
-  },
-];
-
-// ---------- Global stores (Tolu) ----------
-const store = (id: string, city: string, path: string) => ({
+// ---------- Stores ----------
+const store = (id: string, city: string, country: string, photo: Photo) => ({
   id,
   city,
-  image: img(`/vancheerfile/images${path}`),
+  country,
+  photo,
 });
 
 export const storeRegions: StoreRegion[] = [
@@ -210,73 +118,61 @@ export const storeRegions: StoreRegion[] = [
     id: "asia",
     name: "Asia",
     stores: [
-      store("nanjing", "Nanjing, China", "/2025/8/20250807164444718.jpg"),
-      store("shanghai", "Shanghai, China", "/2025/8/20250807164413200.jpg"),
-      store("hong-kong", "Hongkong, China", "/2025/8/20250807164021215.jpg"),
-      store("bangkok", "Bangkok, Thailand", "/2025/8/20250807163647126.jpg"),
-      store("jakarta", "Jakarta, Indonesia", "/2025/8/20250807163748712.JPG"),
-      store("seoul", "Seoul, Korea", "/2025/8/20250807163925101.jpg"),
+      store("shanghai", "Shanghai", "China", photos.shanghai),
+      store("hong-kong", "Hong Kong", "China", photos.hongKong),
+      store("bangkok", "Bangkok", "Thailand", photos.bangkok),
+      store("jakarta", "Jakarta", "Indonesia", photos.jakarta),
+      store("seoul", "Seoul", "South Korea", photos.seoul),
     ],
   },
   {
     id: "north-america",
     name: "North America",
     stores: [
-      store("toronto", "Toronto, Canada", "/2025/8/20250807163054481.jpg"),
-      store("manhattan", "Manhattan, USA", "/2024/4/20240408153454411.jpg"),
-      store("nyc", "New York City, USA", "/2024/4/20240408153327872.jpg"),
-      store("california", "California, USA", "/2025/8/2025080811167843.jpg"),
-      store(
-        "santa-monica",
-        "Santa Monica, USA",
-        "/2024/11/20241112104554416.jpg",
-      ),
-      store("florida", "Florida, USA", "/2024/4/20240408154043111.jpg"),
+      store("toronto", "Toronto", "Canada", photos.toronto),
+      store("new-york", "New York", "USA", photos.newYork),
+      store("los-angeles", "Los Angeles", "USA", photos.losAngeles),
+      store("santa-monica", "Santa Monica", "USA", photos.santaMonica),
+      store("miami", "Miami", "USA", photos.miami),
     ],
   },
   {
     id: "europe",
     name: "Europe",
     stores: [
-      store("warsaw", "Warsaw, Poland", "/2026/1/20260112171921644.jpg"),
-      store("madrid", "Madrid, Spain", "/2025/8/20250807165110548.JPG"),
-      store(
-        "champs-elysees",
-        "Champs-Elysées, France",
-        "/2024/11/20241112095813281.png",
-      ),
-      store("london", "London, UK", "/2024/4/20240408152147571.jpg"),
-      store(
-        "oxford-street",
-        "Oxford Street, UK",
-        "/2024/11/20241112101735575.jpg",
-      ),
-      store("barcelona", "Barcelona, Spain", "/2024/11/20241112104812175.png"),
+      store("warsaw", "Warsaw", "Poland", photos.warsaw),
+      store("madrid", "Madrid", "Spain", photos.madrid),
+      store("paris", "Paris", "France", photos.paris),
+      store("london", "London", "UK", photos.london),
+      store("barcelona", "Barcelona", "Spain", photos.barcelona),
     ],
   },
 ];
 
-// ---------- "Bringing Joy to the World" cards (Tolu) ----------
-export const joyCards: JoyCard[] = [
+// ---------- Stories ----------
+export const stories: Story[] = [
   {
     id: "moments",
-    title: "MINISO Moments",
-    text: "Discover the wonderful experiences at MINISO!",
-    image: img("/vancheerfile/images/2024/11/20241118135211825.jpg"),
-    href: "#moments",
+    title: "MINILA moments",
+    text: "Hauls, shelf tours and gift ideas from people who shop with us.",
+    cta: "See moments",
+    href: "#stories",
+    photo: photos.shopper,
   },
   {
     id: "news",
-    title: "Latest News",
-    text: "MINISO Unveils Brand Upgrade Achievements, Aiming to Build the World's Leading IP Design Retail Group",
-    image: img("/vancheerfile/images/2024/11/20241112144331098.jpg"),
-    href: "#news",
+    title: "Desk Club gets a refill bar",
+    text: "Bring back an empty gel pen and fill it with any of 24 inks, in 40 stores from this month.",
+    cta: "Read the story",
+    href: "#stories",
+    photo: photos.newspapers,
   },
   {
     id: "franchise",
-    title: "Franchise",
-    text: "Learn more",
-    image: img("/vancheerfile/images/2024/3/20240309090551653.jpg"),
-    href: "#contact",
+    title: "Open a MINILA",
+    text: "Bring small joys to your city. We help with the space, the stock and the training.",
+    cta: "Start an enquiry",
+    href: "#franchise",
+    photo: photos.shopOwner,
   },
 ];

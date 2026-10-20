@@ -1,103 +1,111 @@
-import type { FooterColumn, NavItem, SocialLink } from "./types";
-
-/** Every image in this clone is loaded from miniso.com (see next.config.ts). */
-export const MINISO = "https://www.miniso.com";
-export const img = (path: string) => `${MINISO}${path}`;
+import type { FooterColumn, NavItem, NavLink } from "./types";
 
 export const brand = {
-  name: "MINISO",
-  /** Red bag logo, 50 x 60. */
-  logo: img("/vancheerfile/images/2024/3/20240306121923689.png"),
-  /** Red smile mark used inside headings like "LIFE IS ✱ FOR FUN" (48 x 48). */
-  star: img("/en/images/nimg48_1.png"),
-  /** Faint decorative pattern used behind some sections (448 x 438). */
-  decor: img("/en/images/nimg448Bg.png"),
-  /** Small red "+" after some stats. */
-  plus: img("/en/images/nimg16_1.png"),
+  name: "MINILA",
+  wordmark: "minila",
+  tagline: "Small things, big joy.",
 };
 
 export const mainNav: NavItem[] = [
-  { label: "Home", href: "/" },
   {
-    label: "Brand",
-    href: "#brand",
+    label: "Lines",
+    href: "#lines",
     children: [
-      { label: "Brand Profile", href: "#brand-profile" },
-      { label: "News", href: "#news" },
-      { label: "Contact Us", href: "#contact" },
+      {
+        label: "Cloud Bunny",
+        href: "#shop",
+        select: { section: "shop", id: "cloud-bunny" },
+      },
+      {
+        label: "Desk Club",
+        href: "#shop",
+        select: { section: "shop", id: "desk-club" },
+      },
+      {
+        label: "Home & away",
+        href: "#shop",
+        select: { section: "shop", id: "home-away" },
+      },
     ],
   },
-  {
-    label: "Product",
-    href: "#product",
-    children: [{ label: "IP Collaboration", href: "#ip-collaboration" }],
-  },
+  { label: "Shop", href: "#shop" },
   {
     label: "Stores",
     href: "#stores",
     children: [
-      { label: "Store Image", href: "#store-image" },
-      { label: "E-Shop", href: "https://miniso-us.com/", external: true },
-      { label: "Global Market", href: "#global-market" },
+      {
+        label: "Asia",
+        href: "#stores",
+        select: { section: "stores", id: "asia" },
+      },
+      {
+        label: "North America",
+        href: "#stores",
+        select: { section: "stores", id: "north-america" },
+      },
+      {
+        label: "Europe",
+        href: "#stores",
+        select: { section: "stores", id: "europe" },
+      },
     ],
   },
-  { label: "Investors", href: "https://ir.miniso.com/", external: true },
-  { label: "Social Responsibility", href: "#social-responsibility" },
+  { label: "Stories", href: "#stories" },
 ];
 
-export const languages: { label: string; href?: string; current?: boolean }[] =
-  [
-    { label: "中", href: "https://www.miniso.cn/" },
-    { label: "en", current: true },
-  ];
+export const headerCta: NavLink = { label: "Open a store", href: "#franchise" };
 
 export const footer = {
-  franchiseLabel: "Franchise Inquiries",
-  franchiseIcon: img("/en/images/nimg17_1.png"),
-  franchiseEmail: "Franchise@miniso.com",
+  franchise: {
+    heading: "Want a MINILA in your city?",
+    text: "We partner with local owners in 64 markets. Tell us where, and we'll send you the numbers.",
+    email: "franchise@minila.example",
+  },
   columns: [
     {
-      heading: { label: "Brand", href: "#brand" },
+      heading: "Shop",
       links: [
-        { label: "Brand Profile", href: "#brand-profile" },
-        { label: "News", href: "#news" },
-        { label: "Contact Us", href: "#contact" },
+        { label: "All lines", href: "#lines" },
+        {
+          label: "Cloud Bunny",
+          href: "#shop",
+          select: { section: "shop", id: "cloud-bunny" },
+        },
+        {
+          label: "Desk Club",
+          href: "#shop",
+          select: { section: "shop", id: "desk-club" },
+        },
+        {
+          label: "Home & away",
+          href: "#shop",
+          select: { section: "shop", id: "home-away" },
+        },
       ],
     },
     {
-      heading: { label: "Product", href: "#product" },
-      links: [{ label: "IP Collaboration", href: "#ip-collaboration" }],
+      heading: "Visit",
+      links: [
+        { label: "Find a store", href: "#stores" },
+        { label: "Open a store", href: "#franchise" },
+        { label: "Stories", href: "#stories" },
+      ],
     },
     {
-      heading: { label: "Stores", href: "#stores" },
+      heading: "Follow",
       links: [
-        { label: "Store Image", href: "#store-image" },
-        { label: "E-Shop", href: "https://miniso-us.com/", external: true },
-        { label: "Global Market", href: "#global-market" },
+        { label: "Instagram", href: "https://instagram.com", external: true },
+        { label: "TikTok", href: "https://tiktok.com", external: true },
+        { label: "Pinterest", href: "https://pinterest.com", external: true },
       ],
     },
   ] satisfies FooterColumn[],
-  /** Rendered as headings with no sub-links, in the last footer column. */
-  standalone: [
-    { label: "Investors", href: "https://ir.miniso.com/", external: true },
-    { label: "Social Responsibility", href: "#social-responsibility" },
-  ],
-  privacy: { label: "Privacy Policy", href: "#privacy" },
-  copyright: "Copyright © 2026 MINISO(GUANGZHOU)Co.,Ltd",
-  socials: [
-    {
-      id: "weibo",
-      label: "Weibo",
-      icon: img("/en/images/nimg44_3.png"),
-      iconHover: img("/en/images/nimg44_3on.png"),
-      href: "#",
-    },
-    {
-      id: "wechat",
-      label: "WeChat",
-      icon: img("/en/images/nimg44_4.png"),
-      iconHover: img("/en/images/nimg44_4on.png"),
-      href: "#",
-    },
-  ] satisfies SocialLink[],
+  legal:
+    "MINILA is a fictional brand, made for a practice project. Not affiliated with any real company.",
+  credits: { label: "Photo credits", href: "/credits" },
+  maker: {
+    label: "Built by ReignTek",
+    href: "https://reigntek.co",
+    external: true,
+  },
 };

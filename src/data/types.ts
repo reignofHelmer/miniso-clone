@@ -1,44 +1,56 @@
 // Shared data types for every homepage section.
-// Only Helmer edits this file. Ask before changing a type.
 
 export type NavLink = {
   label: string;
   href: string;
   external?: boolean;
+  /** Also switch a section's tab when clicked (e.g. open a store region). */
+  select?: SelectEvent;
 };
 
+/** Sent with window events so one section can open a tab in another. */
+export type SelectEvent = { section: "shop" | "stores"; id: string };
+
 export type NavItem = NavLink & {
-  /** Sub-links shown in the dropdown strip (desktop) and accordion (mobile). */
+  /** Sub-links shown in the dropdown (desktop) and accordion (mobile). */
   children?: NavLink[];
 };
 
-export type Banner = {
-  id: string;
-  image: string;
-  alt: string;
-  width: number;
-  height: number;
+/** Who took a photo, for the /credits page. Every photo is from Unsplash. */
+export type Credit = {
+  name: string;
+  /** Unsplash photo page, e.g. https://unsplash.com/photos/abc123 */
+  href: string;
 };
 
-export type IpFeature = {
+export type Photo = {
+  src: string;
+  alt: string;
+  credit: Credit;
+};
+
+export type Tone = "bubblegum" | "butter" | "mint" | "cobalt";
+
+/** A product line, e.g. "Cloud Bunny". Shown in the lines accordion. */
+export type Line = {
   id: string;
   name: string;
-  eyebrow: string;
+  tagline: string;
   description: string;
-  href: string;
-  /** Full-width background artwork. */
-  image: string;
-  /** Small logo shown in the round switcher. */
-  logo: string;
+  tone: Tone;
+  photo: Photo;
+  /** The product-rail tab that "Shop this line" opens. */
+  shelfId: string;
 };
 
 export type Product = {
   id: string;
   name: string;
-  image: string;
+  photo: Photo;
 };
 
-export type IpCollection = {
+/** Products grouped under one tab of the product rail. */
+export type Shelf = {
   id: string;
   name: string;
   products: Product[];
@@ -47,18 +59,18 @@ export type IpCollection = {
 export type Stat = {
   id: string;
   label: string;
-  icon: string;
   value: number;
   /** Word after the number, e.g. "million". */
   unit?: string;
-  /** Show the small red "+" after the number. */
+  /** Show a "+" after the number. */
   plus?: boolean;
 };
 
 export type Store = {
   id: string;
   city: string;
-  image: string;
+  country: string;
+  photo: Photo;
 };
 
 export type StoreRegion = {
@@ -67,24 +79,16 @@ export type StoreRegion = {
   stores: Store[];
 };
 
-export type JoyCard = {
+export type Story = {
   id: string;
   title: string;
   text: string;
-  image: string;
+  cta: string;
   href: string;
-  external?: boolean;
+  photo: Photo;
 };
 
 export type FooterColumn = {
-  heading: NavLink;
+  heading: string;
   links: NavLink[];
-};
-
-export type SocialLink = {
-  id: string;
-  label: string;
-  icon: string;
-  iconHover: string;
-  href: string;
 };
