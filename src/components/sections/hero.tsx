@@ -17,6 +17,20 @@ import { cn } from "@/lib/utils";
 import { unsplash } from "@/lib/unsplash";
 
 const SLIDE_MS = 6000;
+
+// Same text settings for the mask and the outline drawn over it.
+const wordmarkProps = {
+  x: 500,
+  y: 296,
+  textAnchor: "middle",
+  fontSize: 380,
+  textLength: 992,
+  lengthAdjust: "spacingAndGlyphs",
+  style: { fontFamily: "var(--font-bagel)" },
+  initial: { y: 140, opacity: 0 },
+  animate: { y: 0, opacity: 1 },
+  transition: { type: "spring", stiffness: 120, damping: 16, delay: 0.1 },
+} as const;
 // SVG canvas for the wordmark. The text is stretched to exactly fill WIDTH.
 const WIDTH = 1000;
 const HEIGHT = 318;
@@ -62,24 +76,7 @@ export function Hero() {
           <defs>
             <mask id={maskId} maskUnits="userSpaceOnUse">
               <rect width={WIDTH} height={HEIGHT} fill="black" />
-              <motion.text
-                x={WIDTH / 2}
-                y={HEIGHT - 22}
-                textAnchor="middle"
-                fontSize={380}
-                textLength={WIDTH - 8}
-                lengthAdjust="spacingAndGlyphs"
-                fill="white"
-                style={{ fontFamily: "var(--font-bagel)" }}
-                initial={{ y: 140, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{
-                  type: "spring",
-                  stiffness: 120,
-                  damping: 16,
-                  delay: 0.1,
-                }}
-              >
+              <motion.text {...wordmarkProps} fill="white">
                 {brand.wordmark}
               </motion.text>
             </mask>
@@ -113,6 +110,17 @@ export function Hero() {
               </AnimatePresence>
             </motion.g>
           </g>
+          {/* Faint outline keeps the letters readable over pale photos. */}
+          <motion.text
+            {...wordmarkProps}
+            aria-hidden
+            fill="none"
+            stroke="var(--ink)"
+            strokeOpacity={0.14}
+            strokeWidth={2}
+          >
+            {brand.wordmark}
+          </motion.text>
         </svg>
 
         <div className="mt-8 flex flex-col gap-8 md:mt-10 md:flex-row md:items-end md:justify-between">
