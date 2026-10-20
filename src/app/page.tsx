@@ -3,6 +3,7 @@
 // in the same order as miniso.com (top to bottom).
 import { Header } from "@/components/sections/header";
 import { HeroCarousel } from "@/components/sections/hero-carousel";
+import { IpSpotlight } from "@/components/sections/ip-spotlight";
 
 export default function Home() {
   return (
@@ -10,6 +11,8 @@ export default function Home() {
       <Header />
       <main className="flex-1">
         <HeroCarousel />
+        {/* Stats (Tolu) goes here */}
+        <IpSpotlight />
       </main>
     </>
   );
