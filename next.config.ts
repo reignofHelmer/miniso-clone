@@ -4,19 +4,11 @@ const nextConfig: NextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
   images: {
-    // Practice clone: images are loaded straight from miniso.com.
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "www.miniso.com",
-        pathname: "/vancheerfile/images/**",
-      },
-      {
-        protocol: "https",
-        hostname: "www.miniso.com",
-        pathname: "/en/images/**",
-      },
-    ],
+    // All photos come from Unsplash (free licence). Unsplash resizes them
+    // itself, so a custom loader asks for the right width instead of
+    // running them through Next's optimiser.
+    loader: "custom",
+    loaderFile: "./src/lib/image-loader.ts",
   },
   turbopack: {
     rules: {

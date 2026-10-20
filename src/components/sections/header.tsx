@@ -1,224 +1,164 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { Dialog } from "@base-ui/react/dialog";
-import { AnimatePresence, motion } from "motion/react";
+import {
+  AnimatePresence,
+  motion,
+  useMotionValueEvent,
+  useScroll,
+} from "motion/react";
 import { ChevronDown, Menu, Search, X } from "lucide-react";
 
-import { Container } from "@/components/shared/container";
-import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
-import { brand, languages, mainNav } from "@/data/site";
-import type { NavItem, NavLink } from "@/data/types";
+import { SmartLink } from "@/components/shared/smart-link";
+import { lines } from "@/data/home";
+import { brand, headerCta, mainNav } from "@/data/site";
+import type { NavItem } from "@/data/types";
 import { cn } from "@/lib/utils";
 
-/** Opens external links in a new tab, internal ones with next/link. */
-function SmartLink({
-  link,
-  className,
-  children,
-  ...props
-}: {
-  link: NavLink;
-  className?: string;
-  children: React.ReactNode;
-} & Omit<React.ComponentProps<"a">, "href">) {
-  if (link.external) {
-    return (
-      <a
-        href={link.href}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={className}
-        {...props}
-      >
-        {children}
-      </a>
-    );
-  }
-  return (
-    <Link href={link.href} className={className} {...props}>
-      {children}
-    </Link>
-  );
-}
-
+/** Floating pill header: shrinks and firms up once you scroll. */
 export function Header() {
-  const pathname = usePathname();
+  const [scrolled, setScrolled] = useState(false);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [searchOpen, setSearchOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  const { scrollY } = useScroll();
+  useMotionValueEvent(scrollY, "change", (y) => setScrolled(y > 24));
+
   const cancelClose = useCallback(() => {
     if (closeTimer.current) clearTimeout(closeTimer.current);
   }, []);
-
   const scheduleClose = useCallback(() => {
     cancelClose();
-    closeTimer.current = setTimeout(() => setOpenMenu(null), 150);
+    closeTimer.current = setTimeout(() => setOpenMenu(null), 160);
   }, [cancelClose]);
+  useEffect(() => cancelClose, [cancelClose]);
 
   const openFor = (item: NavItem) => {
     cancelClose();
     setOpenMenu(item.children?.length ? item.label : null);
   };
 
-  useEffect(() => cancelClose, [cancelClose]);
-
-  const activeItem = mainNav.find((item) => item.label === openMenu);
-  const isActive = (item: NavItem) => !item.external && item.href === pathname;
-
   return (
-    <header>
-      {/* Reserves space under the fixed bar. */}
-      <div aria-hidden className="u-h-120 lg:h-[100px]" />
-
+    <header className="fixed inset-x-0 top-0 z-50 px-3 pt-3 md:px-5 md:pt-5">
       <div
-        className="fixed inset-x-0 top-0 z-50 bg-white shadow-[0_0_14px_#ccc]"
-        onMouseLeave={scheduleClose}
-        onMouseEnter={cancelClose}
+        className={cn(
+          "mx-auto flex max-w-[1180px] items-center justify-between gap-3 rounded-full border pr-2 pl-5 transition-all duration-500 md:pl-7",
+          scrolled
+            ? "h-14 border-transparent bg-white/90 shadow-[0_12px_32px_-14px_rgba(30,24,56,0.35)] backdrop-blur-md"
+            : "border-ink/10 h-16 bg-white/60 backdrop-blur-sm",
+        )}
         onKeyDown={(e) => e.key === "Escape" && setOpenMenu(null)}
       >
-        <Container className="u-h-120 lg:h-[100px]">
-          <Link
-            href="/"
-            aria-label={`${brand.name} home`}
-            className="u-left-30 u-top-20 absolute z-10 lg:top-5 lg:left-0"
-          >
-            <Image
-              src={brand.logo}
-              alt={brand.name}
-              width={50}
-              height={60}
-              priority
-              className="u-w-70 h-auto lg:w-[50px]"
-            />
-          </Link>
+        <a
+          href="#top"
+          aria-label={`${brand.name} home`}
+          className="font-display text-cobalt text-[1.75rem] leading-none"
+        >
+          {brand.wordmark}
+        </a>
 
-          {/* Desktop navigation */}
-          <nav
-            aria-label="Main"
-            className="lg:u-right-190 absolute top-0 hidden lg:block"
-          >
-            <ul className="flex">
-              {mainNav.map((item) => (
-                <li key={item.label} onMouseEnter={() => openFor(item)}>
-                  <SmartLink
-                    link={item}
-                    onFocus={() => openFor(item)}
-                    aria-haspopup={item.children ? "true" : undefined}
-                    aria-expanded={
-                      item.children ? openMenu === item.label : undefined
-                    }
-                    aria-current={isActive(item) ? "page" : undefined}
-                    className={cn(
-                      "u-px-42 text-ink hover:text-brand block h-[100px] text-base leading-[100px] font-medium transition-colors duration-500",
-                      (isActive(item) || openMenu === item.label) &&
-                        "text-brand",
-                    )}
-                  >
-                    {item.label}
-                  </SmartLink>
-                </li>
-              ))}
-            </ul>
-          </nav>
-
-          {/* Search + language */}
-          <div className="u-right-140 u-top-20 absolute z-10 flex items-center lg:top-[30px] lg:right-0">
-            <button
-              type="button"
-              onClick={() => setSearchOpen(true)}
-              aria-label="Search"
-              className="u-size-80 u-mr-10 text-ink hover:text-brand flex items-center justify-center transition-colors lg:mr-5 lg:size-10"
-            >
-              <Search className="u-size-36 lg:size-[22px]" strokeWidth={2} />
-            </button>
-            {languages.map((lang) =>
-              lang.current ? (
-                <span
-                  key={lang.label}
-                  aria-current="true"
-                  className="u-ml-30 u-text-28 u-h-80 font-mont flex items-center text-[#ccc] uppercase lg:ml-5 lg:h-10 lg:text-base"
+        {/* Desktop navigation */}
+        <nav aria-label="Main" className="hidden lg:block">
+          <ul className="flex items-center gap-1" onMouseLeave={scheduleClose}>
+            {mainNav.map((item) => (
+              <li
+                key={item.label}
+                className="relative"
+                onMouseEnter={() => openFor(item)}
+                onBlur={(e) => {
+                  // Close when keyboard focus leaves this item and its dropdown.
+                  if (!e.currentTarget.contains(e.relatedTarget as Node))
+                    setOpenMenu((open) => (open === item.label ? null : open));
+                }}
+              >
+                <SmartLink
+                  link={item}
+                  onFocus={() => openFor(item)}
+                  aria-expanded={
+                    item.children ? openMenu === item.label : undefined
+                  }
+                  className={cn(
+                    "hover:bg-lilac flex items-center gap-1 rounded-full px-4 py-2 font-medium transition-colors",
+                    openMenu === item.label && "bg-lilac",
+                  )}
                 >
-                  {lang.label}
-                </span>
-              ) : (
-                <a
-                  key={lang.label}
-                  href={lang.href}
-                  target="_blank"
-                  rel="noopener noreferrer nofollow"
-                  lang="zh"
-                  aria-label="中文网站"
-                  className="u-ml-30 u-text-28 u-h-80 font-mont hover:text-brand flex items-center text-[#ccc] uppercase transition-colors lg:ml-5 lg:h-10 lg:text-base"
-                >
-                  {lang.label}
-                </a>
-              ),
-            )}
-          </div>
+                  {item.label}
+                  {item.children ? (
+                    <ChevronDown
+                      aria-hidden
+                      className={cn(
+                        "size-4 transition-transform duration-300",
+                        openMenu === item.label && "rotate-180",
+                      )}
+                    />
+                  ) : null}
+                </SmartLink>
 
-          {/* Mobile menu button */}
+                <AnimatePresence>
+                  {item.children && openMenu === item.label ? (
+                    <motion.ul
+                      initial={{ opacity: 0, y: -6, scale: 0.97 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -6, scale: 0.97 }}
+                      transition={{ duration: 0.18 }}
+                      onMouseEnter={cancelClose}
+                      className="absolute top-full left-0 mt-3 min-w-56 origin-top-left rounded-3xl bg-white p-2 shadow-[0_20px_40px_-16px_rgba(30,24,56,0.35)]"
+                    >
+                      {item.children.map((child) => (
+                        <li key={child.label}>
+                          <SmartLink
+                            link={child}
+                            onClick={() => setOpenMenu(null)}
+                            className="hover:bg-lilac block rounded-2xl px-4 py-3 font-medium transition-colors"
+                          >
+                            {child.label}
+                          </SmartLink>
+                        </li>
+                      ))}
+                    </motion.ul>
+                  ) : null}
+                </AnimatePresence>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        <div className="flex items-center gap-1.5">
+          <button
+            type="button"
+            onClick={() => setSearchOpen(true)}
+            aria-label="Search"
+            className="hover:bg-lilac flex size-11 items-center justify-center rounded-full transition-colors"
+          >
+            <Search className="size-5" strokeWidth={2.25} />
+          </button>
+          <SmartLink
+            link={headerCta}
+            className="bg-cobalt hover:bg-cobalt-deep hidden h-11 items-center rounded-full px-5 font-semibold text-white transition-colors sm:flex"
+          >
+            {headerCta.label}
+          </SmartLink>
           <button
             type="button"
             onClick={() => setMobileOpen(true)}
             aria-label="Open menu"
-            className="u-size-120 text-brand absolute top-0 right-0 flex items-center justify-center lg:hidden"
+            className="bg-ink flex size-11 items-center justify-center rounded-full text-white lg:hidden"
           >
-            <Menu className="u-size-48" strokeWidth={2.5} />
+            <Menu className="size-5" strokeWidth={2.25} />
           </button>
-        </Container>
-
-        {/* Desktop dropdown strip */}
-        <AnimatePresence>
-          {activeItem?.children ? (
-            <motion.div
-              key="strip"
-              initial={{ height: 0 }}
-              animate={{ height: 70 }}
-              exit={{ height: 0 }}
-              transition={{ duration: 0.5, ease: "easeInOut" }}
-              className="absolute inset-x-0 top-full hidden overflow-hidden border-y border-[#f1f1f1] bg-white lg:block"
-            >
-              <ul
-                aria-label={`${activeItem.label} links`}
-                className="flex h-[70px] items-center justify-center"
-              >
-                {activeItem.children.map((child, i) => (
-                  <motion.li
-                    key={`${activeItem.label}-${child.label}`}
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.4, delay: 0.15 + i * 0.1 }}
-                    className="mx-[35px]"
-                  >
-                    <SmartLink
-                      link={child}
-                      onClick={() => setOpenMenu(null)}
-                      className="u-text-16 group text-copy hover:text-brand relative block leading-[70px] transition-colors duration-500"
-                    >
-                      {child.label}
-                      <span className="bg-brand absolute bottom-0 left-1/2 h-px w-0 transition-all duration-500 group-hover:left-0 group-hover:w-full" />
-                    </SmartLink>
-                  </motion.li>
-                ))}
-              </ul>
-            </motion.div>
-          ) : null}
-        </AnimatePresence>
+        </div>
       </div>
 
-      <SearchOverlay open={searchOpen} onOpenChange={setSearchOpen} />
+      <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
       <MobileMenu open={mobileOpen} onOpenChange={setMobileOpen} />
     </header>
   );
 }
 
-function SearchOverlay({
+function SearchDialog({
   open,
   onOpenChange,
 }: {
@@ -228,38 +168,49 @@ function SearchOverlay({
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal>
-        <Dialog.Backdrop className="fixed inset-0 z-[60] bg-black/80 transition-opacity duration-300 data-[ending-style]:opacity-0 data-[starting-style]:opacity-0" />
-        <Dialog.Popup className="fixed top-1/2 left-1/2 z-[61] w-[90%] max-w-[1200px] -translate-x-1/2 -translate-y-1/2 transition-all duration-300 outline-none data-[ending-style]:opacity-0 data-[starting-style]:translate-y-[-40%] data-[starting-style]:opacity-0 lg:w-[30%]">
-          <Dialog.Title className="sr-only">Search MINISO</Dialog.Title>
+        <Dialog.Backdrop className="bg-ink/50 fixed inset-0 z-[60] backdrop-blur-sm transition-opacity duration-300 data-[ending-style]:opacity-0 data-[starting-style]:opacity-0" />
+        <Dialog.Popup className="fixed inset-x-3 top-20 z-[61] mx-auto max-w-2xl rounded-[2rem] bg-white p-3 shadow-2xl transition-all duration-300 outline-none data-[ending-style]:-translate-y-3 data-[ending-style]:opacity-0 data-[starting-style]:-translate-y-3 data-[starting-style]:opacity-0 md:top-28">
+          <Dialog.Title className="sr-only">Search MINILA</Dialog.Title>
           <form
             role="search"
-            onSubmit={(e) => {
-              e.preventDefault();
-              onOpenChange(false);
-            }}
-            className="flex w-full justify-between border-b border-[#555]"
+            action="#shop"
+            onSubmit={() => onOpenChange(false)}
+            className="bg-paper flex items-center gap-2 rounded-full pl-5"
           >
+            <Search aria-hidden className="text-ink/50 size-5 shrink-0" />
             <input
               type="search"
               name="q"
-              placeholder="Please enter keywords"
-              aria-label="Search keywords"
-              className="h-[50px] w-[calc(100%-60px)] bg-transparent px-5 text-sm text-white outline-none placeholder:text-white"
+              autoFocus
+              placeholder="Search plush, pens, bottles…"
+              aria-label="Search products"
+              className="placeholder:text-ink/45 h-14 w-full bg-transparent text-lg outline-none"
             />
-            <button
-              type="submit"
-              aria-label="Submit search"
-              className="flex h-[50px] w-[60px] items-center justify-end text-white"
+            <Dialog.Close
+              aria-label="Close search"
+              className="hover:bg-lilac mr-1.5 flex size-11 shrink-0 items-center justify-center rounded-full transition-colors"
             >
-              <Search className="size-4" />
-            </button>
+              <X className="size-5" />
+            </Dialog.Close>
           </form>
-          <Dialog.Close
-            aria-label="Close search"
-            className="group mx-auto mt-[50px] flex size-[30px] items-center justify-center text-white"
-          >
-            <X className="size-[30px] opacity-60 transition duration-500 group-hover:-rotate-180 group-hover:opacity-100" />
-          </Dialog.Close>
+          <p className="text-ink/60 mt-4 px-3 text-sm">Popular right now</p>
+          <ul className="flex flex-wrap gap-2 p-3">
+            {lines.map((line) => (
+              <li key={line.id}>
+                <SmartLink
+                  link={{
+                    label: line.name,
+                    href: "#shop",
+                    select: { section: "shop", id: line.shelfId },
+                  }}
+                  onClick={() => onOpenChange(false)}
+                  className="border-ink/15 hover:border-cobalt hover:text-cobalt block rounded-full border px-4 py-2 font-medium transition-colors"
+                >
+                  {line.name}
+                </SmartLink>
+              </li>
+            ))}
+          </ul>
         </Dialog.Popup>
       </Dialog.Portal>
     </Dialog.Root>
@@ -273,9 +224,7 @@ function MobileMenu({
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) {
-  const [expanded, setExpanded] = useState<string | null>(null);
-
-  // Close the drawer if the screen grows to desktop size.
+  // Close the menu if the window grows to desktop size.
   useEffect(() => {
     const mq = window.matchMedia("(min-width: 64rem)");
     const onChange = () => mq.matches && onOpenChange(false);
@@ -284,105 +233,70 @@ function MobileMenu({
   }, [onOpenChange]);
 
   const close = () => onOpenChange(false);
+  const items: NavItem[] = [...mainNav, headerCta];
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent
-        side="right"
-        showCloseButton={false}
-        className="gap-0 overflow-y-auto border-0 bg-white p-0 data-[side=right]:w-full data-[side=right]:border-l-0 data-[side=right]:sm:max-w-none"
-      >
-        <SheetTitle className="sr-only">Menu</SheetTitle>
-        <div className="u-h-120 relative shrink-0 border-b border-[#d6d6d6]">
-          <Link
-            href="/"
-            onClick={close}
-            aria-label={`${brand.name} home`}
-            className="u-left-30 u-top-20 absolute"
-          >
-            <Image
-              src={brand.logo}
-              alt={brand.name}
-              width={50}
-              height={60}
-              className="u-w-70 h-auto"
-            />
-          </Link>
-          <button
-            type="button"
-            onClick={close}
-            aria-label="Close menu"
-            className="u-right-30 u-top-24 u-size-72 bg-brand absolute flex items-center justify-center rounded-full text-white"
-          >
-            <X className="u-size-36" strokeWidth={2.5} />
-          </button>
-        </div>
+    <Dialog.Root open={open} onOpenChange={onOpenChange}>
+      <Dialog.Portal>
+        <Dialog.Popup className="bg-cobalt fixed inset-0 z-[70] flex flex-col overflow-y-auto px-5 pt-4 pb-10 text-white transition-[clip-path] duration-500 ease-[cubic-bezier(0.7,0,0.2,1)] outline-none [clip-path:circle(150%_at_calc(100%-2.5rem)_2.5rem)] data-[ending-style]:[clip-path:circle(0%_at_calc(100%-2.5rem)_2.5rem)] data-[starting-style]:[clip-path:circle(0%_at_calc(100%-2.5rem)_2.5rem)]">
+          <Dialog.Title className="sr-only">Menu</Dialog.Title>
+          <div className="flex h-14 items-center justify-between pl-2">
+            <a
+              href="#top"
+              onClick={close}
+              className="font-display text-[1.75rem] leading-none"
+            >
+              {brand.wordmark}
+            </a>
+            <Dialog.Close
+              aria-label="Close menu"
+              className="text-cobalt flex size-11 items-center justify-center rounded-full bg-white"
+            >
+              <X className="size-5" strokeWidth={2.5} />
+            </Dialog.Close>
+          </div>
 
-        <nav aria-label="Mobile">
-          <ul>
-            {mainNav.map((item) => {
-              const isOpen = expanded === item.label;
-              if (!item.children?.length) {
-                return (
-                  <li key={item.label}>
-                    <SmartLink
-                      link={item}
-                      onClick={close}
-                      className="u-h-88 u-text-30 u-px-30 text-copy flex items-center"
-                    >
-                      {item.label}
-                    </SmartLink>
-                  </li>
-                );
-              }
-              return (
-                <li key={item.label}>
-                  <button
-                    type="button"
-                    aria-expanded={isOpen}
-                    onClick={() => setExpanded(isOpen ? null : item.label)}
-                    className={cn(
-                      "u-h-88 u-text-30 u-px-30 text-copy flex w-full items-center justify-between",
-                      isOpen && "text-brand",
-                    )}
+          <nav aria-label="Mobile" className="mt-10 flex-1">
+            <ul className="space-y-6">
+              {items.map((item, i) => (
+                <motion.li
+                  key={item.label}
+                  initial={{ opacity: 0, y: 24 }}
+                  animate={open ? { opacity: 1, y: 0 } : undefined}
+                  transition={{ delay: 0.15 + i * 0.06, duration: 0.4 }}
+                >
+                  <SmartLink
+                    link={item}
+                    onClick={close}
+                    className="font-display text-5xl leading-none"
                   >
                     {item.label}
-                    <ChevronDown
-                      className={cn(
-                        "u-size-32 transition-transform duration-300",
-                        isOpen && "rotate-180",
-                      )}
-                    />
-                  </button>
-                  <AnimatePresence initial={false}>
-                    {isOpen ? (
-                      <motion.ul
-                        initial={{ height: 0 }}
-                        animate={{ height: "auto" }}
-                        exit={{ height: 0 }}
-                        transition={{ duration: 0.3 }}
-                        className="bg-mist overflow-hidden"
-                      >
-                        {item.children.map((child) => (
-                          <li key={child.label}>
-                            <SmartLink
-                              link={child}
-                              onClick={close}
-                              className="u-h-80 u-text-26 u-pl-60 text-copy flex items-center"
-                            >
-                              {child.label}
-                            </SmartLink>
-                          </li>
-                        ))}
-                      </motion.ul>
-                    ) : null}
-                  </AnimatePresence>
-                </li>
-              );
-            })}
-          </ul>
-        </nav>
-      </SheetContent>
-    </Sheet>
+                  </SmartLink>
+                  {item.children ? (
+                    <ul className="mt-3 flex flex-wrap gap-2">
+                      {item.children.map((child) => (
+                        <li key={child.label}>
+                          <SmartLink
+                            link={child}
+                            onClick={close}
+                            className="block rounded-full bg-white/15 px-4 py-2 font-medium"
+                          >
+                            {child.label}
+                          </SmartLink>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
+                </motion.li>
+              ))}
+            </ul>
+          </nav>
+
+          <p className="mt-10 max-w-[30ch] pl-1 text-white/70">
+            {brand.tagline}
+          </p>
+        </Dialog.Popup>
+      </Dialog.Portal>
+    </Dialog.Root>
   );
 }
