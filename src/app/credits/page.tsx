@@ -36,8 +36,8 @@ export default function CreditsPage() {
           >
             Unsplash License
           </a>
-          . Thank you to the {list.length} photographers below. {brand.name}{" "}
-          itself is a fictional brand made for a practice project.
+          . Thank you to the photographers below. {brand.name} itself is a
+          fictional brand made for a practice project.
         </p>
 
         <ul className="mt-12 grid gap-x-6 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
