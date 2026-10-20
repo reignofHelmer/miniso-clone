@@ -5,11 +5,11 @@ import type { Line, Photo, Shelf, Stat, StoreRegion, Story } from "./types";
 
 // ---------- Hero: photos that show through the wordmark ----------
 export const heroPhotos: Photo[] = [
-  photos.plushShelf,
-  photos.stationeryShop,
   photos.robots,
   photos.teddyCrowd,
+  photos.stationeryShop,
   photos.pens,
+  photos.plushShelf,
 ];
 
 // ---------- Stats band ----------
