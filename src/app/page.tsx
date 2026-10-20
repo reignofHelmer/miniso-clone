@@ -5,6 +5,7 @@ import { Hero } from "@/components/sections/hero";
 import { Lines } from "@/components/sections/lines";
 import { Shop } from "@/components/sections/shop";
 import { Stats } from "@/components/sections/stats";
+import { Stories } from "@/components/sections/stories";
 
 export default function Home() {
   return (
@@ -16,6 +17,7 @@ export default function Home() {
         <Lines />
         <Shop />
         <GlobalStores />
+        <Stories />
       </main>
     </>
   );
