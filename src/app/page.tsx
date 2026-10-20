@@ -1,4 +1,5 @@
 // Homepage. Each section lives in src/components/sections/<name>.tsx.
+import { Footer } from "@/components/sections/footer";
 import { GlobalStores } from "@/components/sections/global-stores";
 import { Header } from "@/components/sections/header";
 import { Hero } from "@/components/sections/hero";
@@ -19,6 +20,7 @@ export default function Home() {
         <GlobalStores />
         <Stories />
       </main>
+      <Footer />
     </>
   );
 }
