@@ -28,23 +28,23 @@ export function Stats() {
           </h2>
           <dl className="mt-12 grid grid-cols-2 gap-x-6 gap-y-10 md:mt-16 lg:grid-cols-4">
             {stats.map((stat) => (
-              <div key={stat.id} className="border-t-2 border-white/25 pt-5">
-                <dt className="sr-only">{stat.label}</dt>
-                <dd>
-                  <span className="font-display text-butter flex items-baseline gap-2 leading-none">
-                    <span className="text-[clamp(3rem,7vw,5.5rem)]">
-                      <Counter stat={stat} />
+              <div
+                key={stat.id}
+                className="flex flex-col-reverse border-t-2 border-white/25 pt-5"
+              >
+                <dt className="mt-3 text-lg text-white/80">
+                  {stat.unit ? `${stat.unit} ` : ""}
+                  {stat.label}
+                </dt>
+                <dd className="font-display text-butter flex items-baseline gap-2 leading-none">
+                  <span className="text-[clamp(3rem,7vw,5.5rem)]">
+                    <Counter stat={stat} />
+                  </span>
+                  {stat.plus ? (
+                    <span aria-hidden className="text-bubblegum text-4xl">
+                      +
                     </span>
-                    {stat.plus ? (
-                      <span aria-hidden className="text-bubblegum text-4xl">
-                        +
-                      </span>
-                    ) : null}
-                  </span>
-                  <span className="mt-3 block text-lg text-white/80">
-                    {stat.unit ? `${stat.unit} ` : ""}
-                    {stat.label}
-                  </span>
+                  ) : null}
                 </dd>
               </div>
             ))}
